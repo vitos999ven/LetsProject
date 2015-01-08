@@ -28,13 +28,14 @@ public class Factory {
     private static PhotoLikeDAO photoLikeDAO = null;
     private static ResponseDAO responseDAO = null;
     private static UserDAO userDAO = null;
-    private static Factory instance = null;
-    public static String a = "dads";
+    
+    
+    private static class FactoryHolder{
+        private final static Factory instance = new Factory();
+    }
     
     public static synchronized Factory getInstance(){
-        if (instance == null)
-            instance = new Factory();
-        return instance;
+        return FactoryHolder.instance;
     }
     
     public AdvertisementDAO getAdvertisementDAO(){

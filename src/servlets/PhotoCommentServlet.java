@@ -4,10 +4,9 @@ package servlets;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import service.Impl.PhotoCommentsServiceImpl;
-import service.Impl.PhotoDescriptionsServiceImpl;
 import service.PhotoCommentsService;
 import service.PhotoDescriptionsService;
+import service.ServiceFactory;
 
 
 public class PhotoCommentServlet extends HttpServlet{
@@ -21,7 +20,7 @@ public class PhotoCommentServlet extends HttpServlet{
         long lastCommentId = Long.parseLong(request.getHeader("lastCommentId"));
         String cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        PhotoDescriptionsService photoDescriptionsService = new PhotoDescriptionsServiceImpl();
+        PhotoDescriptionsService photoDescriptionsService = ServiceFactory.getInstance().getPhotoDescriptionsService();
         String json = photoDescriptionsService.getPhotoByJson(photoId, lastCommentId, 11, cookieUser);
         try (PrintWriter sw = response.getWriter()) {
             sw.print(json);
@@ -38,7 +37,7 @@ public class PhotoCommentServlet extends HttpServlet{
         String value = request.getParameter("value").replace("!:.", "&");
         String cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        PhotoCommentsService photoCommentsService = new PhotoCommentsServiceImpl();
+        PhotoCommentsService photoCommentsService = ServiceFactory.getInstance().getPhotoCommentsService();
         String json = photoCommentsService.addPhotoComment(photoId, cookieUser, value);
         try (PrintWriter sw = response.getWriter()) {
             sw.print(json);
@@ -54,7 +53,7 @@ public class PhotoCommentServlet extends HttpServlet{
         long commentId = Long.parseLong(request.getHeader("commentId"));
         String cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        PhotoCommentsService photoCommentsService = new PhotoCommentsServiceImpl();
+        PhotoCommentsService photoCommentsService = ServiceFactory.getInstance().getPhotoCommentsService();
         photoCommentsService.setDeletedPhotoComment(commentId, cookieUser);
     }
     

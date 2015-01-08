@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import service.Impl.UsersServiceImpl;
+import service.ServiceFactory;
 import service.UsersService;
 
 
@@ -16,7 +16,7 @@ public class SignupServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException { 
         response.setCharacterEncoding("UTF-8");
-        UsersService usersService = new UsersServiceImpl();
+        UsersService usersService = ServiceFactory.getInstance().getUsersService();
         try (PrintWriter sw = response.getWriter()) {
             sw.print(usersService.checkLoginUnique(request.getHeader("username")));
         }
@@ -35,7 +35,7 @@ public class SignupServlet extends HttpServlet {
         int year = Integer.parseInt(request.getHeader("year"));
         Calendar birthday = new GregorianCalendar(year, month, day);
         String about = request.getParameter("about").replace("!:.", "&");
-        UsersService usersService = new UsersServiceImpl();
+        UsersService usersService = ServiceFactory.getInstance().getUsersService();
         boolean success = usersService.addNewUser(login, password, sex, birthday, city, about);
         if (success){
             response.addCookie(new Cookie("username", login));

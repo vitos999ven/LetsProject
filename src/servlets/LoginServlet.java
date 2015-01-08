@@ -4,7 +4,7 @@ package servlets;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import service.Impl.UsersServiceImpl;
+import service.ServiceFactory;
 import service.UsersService;
 
 
@@ -18,7 +18,7 @@ public class LoginServlet extends HttpServlet{
         if (!user.equals("")) return;
         String login = request.getParameter("username");
         String password = request.getParameter("password");
-        UsersService usersService = new UsersServiceImpl();
+        UsersService usersService = ServiceFactory.getInstance().getUsersService();
         boolean input = usersService.checkPassword(login, password);
         if (input) {
             response.addCookie(new Cookie("username", login));

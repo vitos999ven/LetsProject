@@ -5,7 +5,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import service.DialogsService;
-import service.Impl.DialogsServiceImpl;
+import service.ServiceFactory;
 
 
 public class ChangeUnreadMessageServlet extends HttpServlet{
@@ -18,7 +18,7 @@ public class ChangeUnreadMessageServlet extends HttpServlet{
         Cookie[] cookies = request.getCookies();
         String user = CookieMethods.getCookieValue(cookies, "username");
         if (user.equals("")) return;
-        DialogsService dialogsService = new DialogsServiceImpl();
+        DialogsService dialogsService = ServiceFactory.getInstance().getDialogsService();
         dialogsService.changeAllUserToUserMessagesUnread(user, other);
     }
    

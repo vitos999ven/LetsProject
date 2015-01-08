@@ -5,7 +5,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import service.DialogsService;
-import service.Impl.DialogsServiceImpl;
+import service.ServiceFactory;
 
 
 public class DialogsServlet extends HttpServlet{
@@ -19,7 +19,7 @@ public class DialogsServlet extends HttpServlet{
         Cookie[] cookies = request.getCookies();
         String user = CookieMethods.getCookieValue(cookies, "username");
         if (user == null) return;
-        DialogsService dialogsService = new DialogsServiceImpl();
+        DialogsService dialogsService = ServiceFactory.getInstance().getDialogsService();
         try (PrintWriter sw = response.getWriter()) {
             String json = dialogsService.getDialogsByJson(user, lastId, 21);
             sw.print(json);
@@ -35,7 +35,7 @@ public class DialogsServlet extends HttpServlet{
         String user;
         user = CookieMethods.getCookieValue(cookies, "username");
         if (user.equals("")) return;
-        DialogsService dialogsService = new DialogsServiceImpl();
+        DialogsService dialogsService = ServiceFactory.getInstance().getDialogsService();
         if (other.equals(user)){
             try (PrintWriter sw = response.getWriter()) {
                 sw.print(dialogsService.getLastDialogsMessageId(user));

@@ -5,7 +5,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import service.DialogsService;
-import service.Impl.DialogsServiceImpl;
+import service.ServiceFactory;
 
 
 public class DialogServlet extends HttpServlet{
@@ -21,7 +21,7 @@ public class DialogServlet extends HttpServlet{
         if (user.equals("")) return;
         long lastMessageId = (request.getHeader("lastId") != null) ? Long.parseLong(request.getHeader("lastId")) : -1;
         boolean getOldMessages = (request.getHeader("getOldMessages") != null) ? Boolean.parseBoolean(request.getHeader("getOldMessages")) : false;
-        DialogsService dialogsService = new DialogsServiceImpl();
+        DialogsService dialogsService = ServiceFactory.getInstance().getDialogsService();
         String json = dialogsService.getDialogMessagesByJson(other, lastMessageId, getOldMessages, user);
         try (PrintWriter sw = response.getWriter()) {
             sw.print(json);
@@ -38,7 +38,7 @@ public class DialogServlet extends HttpServlet{
         String user;
         user = CookieMethods.getCookieValue(cookies, "username");
         if (user.equals("")) return;
-        DialogsService dialogsService = new DialogsServiceImpl();
+        DialogsService dialogsService = ServiceFactory.getInstance().getDialogsService();
         if (request.getHeader("addMessage").equals("true")){
             String value = request.getParameter("value").replace("!:.", "&");
             dialogsService.addMessage(user, other, value);

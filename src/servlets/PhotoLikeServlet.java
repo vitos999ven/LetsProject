@@ -4,8 +4,8 @@ package servlets;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import service.Impl.PhotoLikesServiceImpl;
 import service.PhotoLikesService;
+import service.ServiceFactory;
 
 
 public class PhotoLikeServlet extends HttpServlet{
@@ -20,7 +20,7 @@ public class PhotoLikeServlet extends HttpServlet{
         Boolean next = Boolean.parseBoolean(request.getHeader("next"));
         String cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        PhotoLikesService photoLikesService = new PhotoLikesServiceImpl();
+        PhotoLikesService photoLikesService = ServiceFactory.getInstance().getPhotoLikesService();
         String json = photoLikesService.getPhotoLikesByJson(photoId, next, lastUser, 11);
         try (PrintWriter sw = response.getWriter()) {
             sw.print(json);
@@ -36,7 +36,7 @@ public class PhotoLikeServlet extends HttpServlet{
         long photoId = Long.parseLong(request.getHeader("photoId"));
         String cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        PhotoLikesService photoLikesService = new PhotoLikesServiceImpl();
+        PhotoLikesService photoLikesService = ServiceFactory.getInstance().getPhotoLikesService();
         photoLikesService.addPhotoLike(photoId, cookieUser);
     }
      
@@ -49,7 +49,7 @@ public class PhotoLikeServlet extends HttpServlet{
         long photoId = Long.parseLong(request.getHeader("photoId"));
         String cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        PhotoLikesService photoLikesService = new PhotoLikesServiceImpl();
+        PhotoLikesService photoLikesService = ServiceFactory.getInstance().getPhotoLikesService();
         photoLikesService.setDeletedPhotoLike(photoId, cookieUser);
     }
  

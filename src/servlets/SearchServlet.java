@@ -4,7 +4,7 @@ package servlets;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import service.Impl.UsersServiceImpl;
+import service.ServiceFactory;
 import service.UsersService;
 
 
@@ -21,7 +21,7 @@ public class SearchServlet extends HttpServlet {
         boolean next = Boolean.parseBoolean(request.getHeader("next"));
         cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        UsersService userService = new UsersServiceImpl();
+        UsersService userService = ServiceFactory.getInstance().getUsersService();
         try (PrintWriter sw = response.getWriter()) {
             String json = userService.getUsersByJson(search, login, next, 11);
             sw.print(json);

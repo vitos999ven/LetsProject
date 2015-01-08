@@ -5,7 +5,7 @@ import hibernate.logic.SexEnum;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import service.Impl.UsersServiceImpl;
+import service.ServiceFactory;
 import service.UsersService;
 
 
@@ -19,7 +19,7 @@ public class UsersServlet extends HttpServlet {
         String cookieUser, json;
         cookieUser = CookieMethods.getCookieValue(cookies, "username");
         if (cookieUser.equals("")) return;
-        UsersService usersService = new UsersServiceImpl();
+        UsersService usersService = ServiceFactory.getInstance().getUsersService();
         if (request.getHeader("user") != null){
             String login = request.getHeader("user");
             long descId = Long.parseLong(request.getHeader("descId"));

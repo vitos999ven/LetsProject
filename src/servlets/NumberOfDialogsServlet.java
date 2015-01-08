@@ -5,7 +5,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import service.DialogsService;
-import service.Impl.DialogsServiceImpl;
+import service.ServiceFactory;
 
 
 public class NumberOfDialogsServlet extends HttpServlet {
@@ -17,7 +17,7 @@ public class NumberOfDialogsServlet extends HttpServlet {
         String user;
         user = CookieMethods.getCookieValue(cookies, "username");
         if (user.equals("")) return;
-        DialogsService dialogsService = new DialogsServiceImpl();
+        DialogsService dialogsService = ServiceFactory.getInstance().getDialogsService();
         try (PrintWriter sw = response.getWriter()) {
             sw.print(dialogsService.getNumberOfUnreadDialogs(user));
         }

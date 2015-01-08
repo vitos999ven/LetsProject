@@ -1,5 +1,6 @@
 package hibernate;
 
+
 import hibernate.logic.AccessEnum;
 import hibernate.logic.AdvComment;
 import hibernate.logic.Advertisement;
