@@ -1,0 +1,1 @@
+USER TESTS: FAILED: test01_addUser(hibernate.junit.UserDAOtests) [null]

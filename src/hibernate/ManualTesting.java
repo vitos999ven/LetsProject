@@ -22,7 +22,7 @@ public class ManualTesting {
         //changeAllUserToUserMessagesUnread();
       
         getAllPhotoLikes();
-      System.exit(0);
+        System.exit(0);
     }
     
   

@@ -284,7 +284,6 @@ is divided into following sections:
                 <copy todir='C:/проги/apache-tomcat-8.0.14/webapps/Lets/WEB-INF/classes'>
                          <fileset dir='@{destdir}' includes="**/*.*"/>
                 </copy>   
-                <copy file="${basedir}/index.jsp" todir="C:/проги/apache-tomcat-8.0.14/webapps/Lets"/>
             </sequential>
         </macrodef>
     </target>
