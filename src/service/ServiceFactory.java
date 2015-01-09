@@ -9,48 +9,53 @@ import service.Impl.UsersServiceImpl;
 
 public class ServiceFactory {
     
-    private static DialogsService dialogsService = null;
-    private static UsersService usersService = null;
-    private static PhotoDescriptionsService photoDescriptionsService = null;
-    private static PhotoCommentsService photoCommentsService = null;
-    private static PhotoLikesService photoLikesService = null;
-    
     private static class FactoryHolder{
         private final static ServiceFactory instance = new ServiceFactory();
     }
     
-    public static synchronized ServiceFactory getInstance(){
+    private static class DialogsServiceHolder{
+        private final static DialogsService dialogsService = new DialogsServiceImpl();
+    }
+    
+    private static class UsersServiceHolder{
+        private final static UsersService usersService = new UsersServiceImpl();
+    }
+    
+    private static class PhotoDescriptionsServiceHolder{
+        private final static PhotoDescriptionsService photoDescriptionsService = new PhotoDescriptionsServiceImpl();
+    }
+    
+    private static class PhotoCommentsServiceHolder{
+        private final static PhotoCommentsService photoCommentsService = new PhotoCommentsServiceImpl();
+    }
+    
+    private static class PhotoLikesServiceHolder{
+        private final static PhotoLikesService photoLikesService = new PhotoLikesServiceImpl();
+    }
+    
+    
+    public static ServiceFactory getInstance(){
         return FactoryHolder.instance;
     }
     
     public DialogsService getDialogsService(){
-        if (dialogsService == null)
-            dialogsService = new DialogsServiceImpl();
-        return dialogsService;
+        return DialogsServiceHolder.dialogsService;
     }
      
     public UsersService getUsersService(){
-        if (usersService == null)
-            usersService = new UsersServiceImpl();
-        return usersService;
+        return UsersServiceHolder.usersService;
     }
      
     public PhotoDescriptionsService getPhotoDescriptionsService(){
-        if (photoDescriptionsService == null)
-            photoDescriptionsService = new PhotoDescriptionsServiceImpl();
-        return photoDescriptionsService;
+        return PhotoDescriptionsServiceHolder.photoDescriptionsService;
     }
 
     public PhotoCommentsService getPhotoCommentsService(){
-        if (photoCommentsService == null)
-            photoCommentsService = new PhotoCommentsServiceImpl();
-        return photoCommentsService;
+        return PhotoCommentsServiceHolder.photoCommentsService;
     }
     
     public PhotoLikesService getPhotoLikesService(){
-        if (photoLikesService == null)
-            photoLikesService = new PhotoLikesServiceImpl();
-        return photoLikesService;
+        return PhotoLikesServiceHolder.photoLikesService;
     }
     
 }

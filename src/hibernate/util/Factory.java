@@ -20,70 +20,78 @@ import hibernate.DAO.UserDAO;
 
 
 public class Factory {
-    private static AdvertisementDAO advertisementDAO = null;
-    private static AdvCommentDAO advCommentDAO = null;
-    private static MessageDAO messageDAO = null;
-    private static PhotoCommentDAO photoCommentDAO = null;
-    private static PhotoDescriptionDAO photoDescriptionDAO = null;
-    private static PhotoLikeDAO photoLikeDAO = null;
-    private static ResponseDAO responseDAO = null;
-    private static UserDAO userDAO = null;
-    
     
     private static class FactoryHolder{
         private final static Factory instance = new Factory();
     }
     
-    public static synchronized Factory getInstance(){
+    private static class AdvertisementDAOHolder{
+        private final static AdvertisementDAO advertisementDAO = new AdvertisementDAOImpl();
+    }
+    
+    private static class AdvCommentDAOHolder{
+        private final static AdvCommentDAO advCommentDAO = new AdvCommentDAOImpl();
+    }
+    
+    private static class MessageDAOHolder{
+        private final static MessageDAO messageDAO = new MessageDAOImpl();
+    }
+    
+    private static class PhotoCommentDAOHolder{
+        private final static PhotoCommentDAO photoCommentDAO = new PhotoCommentDAOImpl();
+    }
+    
+    private static class PhotoDescriptionDAOHolder{
+        private final static PhotoDescriptionDAO photoDescriptionDAO = new PhotoDescriptionDAOImpl();
+    }
+    
+    private static class PhotoLikeDAOHolder{
+        private final static PhotoLikeDAO photoLikeDAO = new PhotoLikeDAOImpl();
+    }
+    
+    private static class ResponseDAOHolder{
+        private final static ResponseDAO responseDAO = new ResponseDAOImpl();
+    }
+    
+    private static class UserDAOHolder{
+        private final static UserDAO userDAO = new UserDAOImpl();
+    }
+    
+    public static Factory getInstance(){
         return FactoryHolder.instance;
     }
     
+    
     public AdvertisementDAO getAdvertisementDAO(){
-        if (advertisementDAO == null)
-            advertisementDAO = new AdvertisementDAOImpl();
-        return advertisementDAO;
+        return AdvertisementDAOHolder.advertisementDAO;
     }
      
     public AdvCommentDAO getAdvCommentDAO(){
-        if (advCommentDAO == null)
-            advCommentDAO = new AdvCommentDAOImpl();
-        return advCommentDAO;
+        return AdvCommentDAOHolder.advCommentDAO;
     }
      
     public MessageDAO getMessageDAO(){
-        if (messageDAO == null)
-            messageDAO = new MessageDAOImpl();
-        return messageDAO;
+        return MessageDAOHolder.messageDAO;
     }
 
     public PhotoCommentDAO getPhotoCommentDAO(){
-        if (photoCommentDAO == null)
-            photoCommentDAO = new PhotoCommentDAOImpl();
-        return photoCommentDAO;
+        return PhotoCommentDAOHolder.photoCommentDAO;
     }
     
     public PhotoDescriptionDAO getPhotoDescriptionDAO(){
-        if (photoDescriptionDAO == null)
-            photoDescriptionDAO = new PhotoDescriptionDAOImpl();
-        return photoDescriptionDAO;
+        return PhotoDescriptionDAOHolder.photoDescriptionDAO;
     }
     
     public PhotoLikeDAO getPhotoLikeDAO(){
-        if (photoLikeDAO == null)
-            photoLikeDAO = new PhotoLikeDAOImpl();
-        return photoLikeDAO;
+        return PhotoLikeDAOHolder.photoLikeDAO;
     }
     
     public ResponseDAO getResponseDAO(){
-        if (responseDAO == null)
-            responseDAO = new ResponseDAOImpl();
-        return responseDAO;
+        return ResponseDAOHolder.responseDAO;
     }
     
     public UserDAO getUserDAO(){
-        if (userDAO == null)
-            userDAO = new UserDAOImpl();
-        return userDAO;
+        return UserDAOHolder.userDAO;
     }
     
 }
