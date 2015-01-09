@@ -38,7 +38,7 @@ public class LoadPhotoServlet extends HttpServlet{
             String description = null;
             FileItem fileItem = null;
             DiskFileItemFactory factory = new DiskFileItemFactory();
-            factory.setSizeThreshold(3*1024*1024);
+            factory.setSizeThreshold(10*1024*1024);
             File tempDir = (File)getServletContext().getAttribute("javax.servlet.context.tempdir");
             factory.setRepository(tempDir);
             ServletFileUpload upload = new ServletFileUpload(factory);
@@ -58,40 +58,52 @@ public class LoadPhotoServlet extends HttpServlet{
             }
          			
             BufferedImage lowImage = ImageIO.read(fileItem.getInputStream());
-            lowImage = getResizedImage(lowImage);
+            BufferedImage bigImage = lowImage;
+            BufferedImage normalImage = null;
+            if (lowImage.getHeight() > 768 || lowImage.getWidth() > 1024){
+                lowImage = normalImage = getResizedImage(lowImage, 768, 1024);
+            }
+            lowImage = getResizedImage(lowImage, 300, 300);
             GregorianCalendar c = new GregorianCalendar();
             PhotoDescription desc = new PhotoDescription( null, c.getTimeInMillis(),"Loader","&user:" + user + "&" + description);
             
             Factory.getInstance().getPhotoDescriptionDAO().addPhotoDescription(desc);
             List <PhotoDescription> descs = Factory.getInstance().getPhotoDescriptionDAO().getAllPhotoDescriptions("Loader", false);
-           
-            for (PhotoDescription i : descs){
-                if ((!i.getDescription().equals("&user:" + user + "&" + description)) && (i.getDate() != c.getTimeInMillis()))
-                    continue;
-                
-                long photoId = i.getId();
-                ImageIO.write(lowImage, "jpg", new File(getServletContext().getRealPath("/images/"+photoId+"low.jpg")));
-                File uploadedFile = new File(getServletContext().getRealPath("/images/"+ photoId +".jpg"));
-                uploadedFile.createNewFile();
-                fileItem.write(uploadedFile);
-            
-                i.setUser(user);
-                i.setDescription(description);
-                TimeUnit.SECONDS.sleep(5);
-                Factory.getInstance().getPhotoDescriptionDAO().updatePhotoDescription(i);
-                break;
+           for (PhotoDescription i : descs){
+                if ((i.getDescription().equals("&user:" + user + "&" + description)) && (i.getDate() == c.getTimeInMillis())){
+                    desc = i;
+                    break;
+                }    
+                    
             }
+            long photoId = desc.getId();
+            ImageIO.write(lowImage, "jpg", new File(getServletContext().getRealPath("/images/"+photoId+"low.jpg")));
+            String Path = "/images/"+ photoId +".jpg";
+            if (normalImage != null){
+                ImageIO.write(normalImage, "jpg", new File(getServletContext().getRealPath(Path)));
+                Path = "/images/"+ photoId +"big.jpg";
+            }
+            ImageIO.write(bigImage, "jpg", new File(getServletContext().getRealPath(Path)));
+                
+                //File uploadedFile = new File(getServletContext().getRealPath(Path));
+                //uploadedFile.createNewFile();
+                //fileItem.write(uploadedFile);
+            
+            desc.setUser(user);
+            desc.setDescription(description);
+            TimeUnit.SECONDS.sleep(5);
+            Factory.getInstance().getPhotoDescriptionDAO().updatePhotoDescription(desc);
         }catch(SQLException e){
         }catch(Exception e){}
     }
     
     
-    public BufferedImage getResizedImage(BufferedImage image){
+    public BufferedImage getResizedImage(BufferedImage image, int newHeight, int newWidth){
         int height = image.getHeight();
         int width = image.getWidth();
         double ScaleFactor = 0.9;
         BufferedImage newImage = image;
-        while(height > 300 || width > 300){
+        while(height > newHeight || width > newWidth){
             height = (int)(height*ScaleFactor);
             width = (int)(width*ScaleFactor);
             newImage = resize(newImage, width, height);
