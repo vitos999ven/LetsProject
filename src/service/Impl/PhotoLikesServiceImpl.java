@@ -5,15 +5,18 @@ import hibernate.logic.User;
 import hibernate.util.Factory;
 import java.sql.SQLException;
 import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import service.JsonObject;
 import service.PhotoLikesService;
 
 
-
+@Service
 public class PhotoLikesServiceImpl implements PhotoLikesService{
 
     private JsonObject json;
     
+    @Transactional
     @Override
     public String getPhotoLikesByJson(long photoId, boolean next, String lastUser, int count) {
         json = new JsonObject();
@@ -54,7 +57,7 @@ public class PhotoLikesServiceImpl implements PhotoLikesService{
         return json.toJsonString();
     }
 
-    
+    @Transactional
     @Override
     public void addPhotoLike(long photoId, String user) {
         try{
@@ -62,7 +65,7 @@ public class PhotoLikesServiceImpl implements PhotoLikesService{
         }catch(SQLException e){}
     }
 
-    
+    @Transactional
     @Override
     public void setDeletedPhotoLike(long photoId, String user) {
         try{

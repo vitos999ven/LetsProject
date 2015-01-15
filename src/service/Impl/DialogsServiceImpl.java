@@ -6,14 +6,18 @@ import hibernate.util.Factory;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
 import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import service.DialogsService;
 import service.JsonObject;
 
 
+@Service
 public class DialogsServiceImpl implements DialogsService {
 
     private JsonObject json;
     
+    @Transactional
     @Override
     public String getDialogMessagesByJson(String other, long lastMessageId, boolean getOldMessages, String cookieUser) {
         json = new JsonObject();
@@ -26,6 +30,7 @@ public class DialogsServiceImpl implements DialogsService {
                         NoMoreMessages = false;
                         dialog.remove(dialog.get(19));
                 }
+                json.put("other", other);
                 json.put("length", dialog.size());
                 json.put("noMore", NoMoreMessages);
                 if (lastMessageId == -1) {
@@ -33,6 +38,7 @@ public class DialogsServiceImpl implements DialogsService {
                 }
             } else {
                 dialog = Factory.getInstance().getMessageDAO().getAllUserToUserMessagesFromId(cookieUser, other, lastMessageId, false);   
+                json.put("other", other);
                 json.put("length", dialog.size());
             }
             for (int i = 0; i < dialog.size(); i++){
@@ -51,7 +57,7 @@ public class DialogsServiceImpl implements DialogsService {
         return json.toJsonString(); 
     }
 
-    
+    @Transactional
     @Override
     public String getDialogsByJson(String user, long lastMessageId, int count) {
         json = new JsonObject();
@@ -83,7 +89,7 @@ public class DialogsServiceImpl implements DialogsService {
         return json.toJsonString(); 
     }
     
-    
+    @Transactional
     @Override
     public void addMessage(String user, String other, String value) {
         Message message = new Message(null, new GregorianCalendar().getTimeInMillis(), user, other, value, user);
@@ -92,7 +98,7 @@ public class DialogsServiceImpl implements DialogsService {
         }catch(SQLException e){}
     }
 
-    
+    @Transactional
     @Override
     public String getLastMessageIdByJson(String user, String other) {
         json = new JsonObject();
@@ -106,7 +112,7 @@ public class DialogsServiceImpl implements DialogsService {
         return json.toJsonString(); 
     }
 
-    
+    @Transactional
     @Override
     public long getLastDialogsMessageId(String user) {
         long lastId = (long) -1;
@@ -116,7 +122,7 @@ public class DialogsServiceImpl implements DialogsService {
         return lastId;
     }
     
-    
+    @Transactional
     @Override
     public void changeAllUserToUserMessagesUnread(String user, String other) {
         try{
@@ -124,7 +130,7 @@ public class DialogsServiceImpl implements DialogsService {
         }catch(SQLException e){}
     }
     
-    
+    @Transactional
     @Override
     public int getNumberOfUnreadDialogs(String user) {
         int number = 0;
@@ -136,7 +142,7 @@ public class DialogsServiceImpl implements DialogsService {
         return number;
     }
     
-    
+    @Transactional
     @Override
     public void setDeletedDialog(String user, String other) {
         try{

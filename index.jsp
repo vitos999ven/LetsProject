@@ -11,8 +11,8 @@
         <![endif]-->
         <meta charset="cp1251">
         <title>Lets</title>
-        <link rel="stylesheet" type="text/css" href="bootstrap.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="bootstrap-theme.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap-theme.css" media="all" />
         <style>
             body {
                 background:#f1f1f1;
@@ -202,7 +202,7 @@
  
         <%  
             Cookie[] cookies = request.getCookies();
-            String user = "";
+            String user = "god";
             if (cookies != null){
               for (Cookie cookie : cookies){
                  if (cookie.getName().equals("username"))
@@ -269,6 +269,7 @@
         </div> 
                         
          <script>
+             
             var EnlargeElementOpacity = null;
             var EnlargeElementOpacityTimer = null;
             var ReduceElementOpacity = null;
@@ -358,13 +359,13 @@
                 document.getElementById('ContainerList').innerHTML = "";
                 document.getElementById('MainNavBarUl').innerHTML = "<li id='Signup-li' onclick='navbarButton(this)'><a href='#'>Sign up</a></li><li id='Login-li' onclick='navbarButton(this)'><a href='#' >Log in</a></li>";
             }
-             
+            
             function getSearchContent(next){
                 next = next || 'true';
                 var parent = $('#Search-li-dropdown > ul').get(0);
                 var request = cleanText($('#Search-li > input').val());
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','SearchServlet?search='+request,true);
+                xhr.open('GET','fastsearch?search='+request,true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var response = JSON.parse(xhr.responseText);
@@ -491,9 +492,10 @@
              
              function NumberOfUnreadDialogs(){
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','NumberOfDialogsServlet',true);
+                xhr.open('GET','numberofdialogs',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
+                    console.log(xhr.responseText);
                     if (+xhr.responseText > 0) document.getElementById('NumberOfUnreadDialogs').innerHTML = xhr.responseText;
                     else document.getElementById('NumberOfUnreadDialogs').innerHTML = "";
                     };
@@ -502,7 +504,7 @@
              
              function checkLastDialogsMessageId(){
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','DialogsServlet',true);
+                xhr.open('GET','getlastdialogsmessageid',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     
@@ -511,13 +513,12 @@
                         clearTimeout(timerLastMessageId);
                         printDialogs();}
                 };
-                xhr.setRequestHeader("other",getCookie("username"));
                 xhr.send('');
             };
             
              function checkLastMessageId(){
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','DialogServlet',true);
+                xhr.open('GET','getlastmessageid',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var response = JSON.parse(xhr.responseText);
@@ -532,7 +533,6 @@
                     
                 };
                 xhr.setRequestHeader("other",$('.DialogName').first().html());
-                xhr.setRequestHeader("addMessage","false");
                 xhr.send('');
             };
              
@@ -671,7 +671,7 @@
                                   return;
                             }
                        var xhr = new XMLHttpRequest();
-                       xhr.open('GET','SignupServlet?username='+login,true);
+                       xhr.open('GET','checkloginunique?username='+login,true);
                        xhr.onreadystatechange = function() {
                           if (this.readyState !== 4) return;
                           var unique = (xhr.responseText === "true");
@@ -702,7 +702,7 @@
             }
             
             function CheckPassword(){
-                var input =$('#PasswordInput');
+                var input = $('#PasswordInput');
                 var password = input.val();
                 if (!!password){
                           input.css("border-color", (/^[0-9a-z]+$/i.test(password)) ? "green" : "red");
@@ -715,7 +715,7 @@
                 City = cleanText(City.replace(/(^\s+|\s+$)/g,''));
                 About = cleanText(About);
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','SignupServlet?city='+City+'&about'+About,true);
+                xhr.open('POST','signup?city='+City+'&about'+About,true);
                 xhr.onreadystatechange = function() {
                     if (this.readyState !== 4) return;
                     var input = (xhr.responseText === "true");
@@ -816,7 +816,7 @@
                 Username = Username.replace(/\s+/g, '');
                 Password = Password.replace(/\s+/g, '');
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','LoginServlet?username='+Username + '&password='+Password,true);
+                xhr.open('GET','login?username='+Username + '&password='+Password,true);
                 xhr.onreadystatechange = function() {
                     if (this.readyState !== 4) return;
                     var input = (xhr.responseText === "true");
@@ -951,7 +951,7 @@
                 ageTo = ageTo || 0;
                 clearTimeout(timerLastMessageId);
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','UsersServlet?search='+search+'&city='+city,true);
+                xhr.open('GET','getusers?search='+search+'&city='+city,true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var users = JSON.parse(xhr.responseText);
@@ -1018,7 +1018,7 @@
             
             function getMoreUsers(search, city, sex, ageFrom, ageTo){
                  var xhr = new XMLHttpRequest();
-                xhr.open('GET','UsersServlet?search='+search+'&city='+city,true);
+                xhr.open('GET','getusers?search='+search+'&city='+city,true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var users = JSON.parse(xhr.responseText);
@@ -1069,7 +1069,7 @@
                 } else event.canselBuddle = true;
                 cleanNavbar();
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','UsersServlet',true);
+                xhr.open('GET','getuser',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     document.body.scrollTop = 0;
@@ -1160,13 +1160,13 @@
                     
                 };
                 xhr.setRequestHeader('user', user);
-                xhr.setRequestHeader('DescId', '-1');
+                xhr.setRequestHeader('lastId', '-1');
                 xhr.send('');
             };
             
             function addPhotoForm(elem){
                 var containerList = document.getElementById('ContainerList');
-                var content = "<li class='list-group-item'><form enctype='multipart/form-data' action='LoadPhotoServlet' method='post' name='loadPhoto' target='hiddenframe'><input type='hidden' name='MAX_FILE_SIZE' value='64000'><input id='fileInput' type='file' name='photo' accept='image/jpeg'><p>Description</p><textarea id='TextArea' class='noscroll' name='text'></textarea><textarea id='TextAreaNoDisplay' class='noscroll' name='description' style='display:none;'></textarea></form> <iframe id='hiddenframe' name='hiddenframe' style='width:0px; height:0px; border:0px'></iframe><button id='SendPhotoButton'>Send</button></li>";
+                var content = "<li class='list-group-item'><form enctype='multipart/form-data' action='loadphoto' method='post' name='loadPhoto' target='hiddenframe'><input type='hidden' name='MAX_FILE_SIZE' value='64000'><input id='fileInput' type='file' name='photo' accept='image/jpeg'><p>Description</p><textarea id='TextArea' class='noscroll' name='text'></textarea><textarea id='TextAreaNoDisplay' class='noscroll' name='description' style='display:none;'></textarea></form> <iframe id='hiddenframe' name='hiddenframe' style='width:0px; height:0px; border:0px'></iframe><button id='SendPhotoButton'>Send</button></li>";
                 containerList.innerHTML = content;
                 ChangeTextAreaSize();
                 document.getElementById('SendPhotoButton').onclick = function(){
@@ -1190,7 +1190,7 @@
             function removePhoto(elem){
                 var photo = elem.id ;
                 var xhr = new XMLHttpRequest();
-                xhr.open('DELETE','PhotoDescriptionServlet',true);
+                xhr.open('DELETE','deletephoto',true);
                 xhr.onreadystatechange = function() {
                     if (this.readyState !== 4) return;
                     if (0 === +getCookie('useravatar')){
@@ -1225,7 +1225,7 @@
                 } else event.canselBuddle = true;
                 var photo = elem.id ;
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','PhotoDescriptionServlet',true);
+                xhr.open('POST','setavatar',true);
                 xhr.onreadystatechange = function() {
                     if (this.readyState !== 4) return;
                     document.getElementById('HomeLiUserImg').src = "images/"+getCookie("useravatar")+"low.jpg";
@@ -1237,7 +1237,7 @@
             
             function getMorePhotos(){
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','UsersServlet',true);
+                xhr.open('GET','getuser',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var photos = JSON.parse(xhr.responseText);
@@ -1328,7 +1328,7 @@
                 window.onscroll = function(){};
                 var photoId = elem.id.substring(8);
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','PhotoDescriptionServlet',true);
+                xhr.open('GET','getphoto',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var comments = JSON.parse(xhr.responseText);
@@ -1400,7 +1400,7 @@
                 } else event.canselBuddle = true;
                 var div = document.getElementById('UsersWhoLikeIt');
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','PhotoLikeServlet',true);
+                xhr.open('GET','getphotolikes',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     console.log(xhr.responseText);
@@ -1438,7 +1438,7 @@
                 var lastComment = $('table[id^="commentId_"]').first();
                 var lastCommentId = lastComment.attr("id").substring(10);
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','PhotoCommentServlet',true);
+                xhr.open('GET','getmorephotocomments',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                      var comments = JSON.parse(xhr.responseText);
@@ -1469,7 +1469,7 @@
             function removeComment(elem){
                 var commentId = elem.id.substring(6);
                 var xhr = new XMLHttpRequest();
-                xhr.open('DELETE','PhotoCommentServlet',true);
+                xhr.open('DELETE','deletephotocomment',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var parent = elem.parentNode;
@@ -1496,7 +1496,7 @@
                 text = cleanText(text.replace(/[\r\n]/g,':.!'));
                 elem.previousSibling.value = '';
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','PhotoCommentServlet?value='+text,true);
+                xhr.open('POST','addphotocomment?value='+text,true);
                 xhr.onreadystatechange = function() {
                     if (this.readyState !== 4) return;
                     var comment = JSON.parse(xhr.responseText);
@@ -1519,14 +1519,14 @@
             
             function AddPhotoLike(photoId){
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','PhotoLikeServlet',true);
+                xhr.open('POST','addphotolike',true);
                 xhr.setRequestHeader("photoId",photoId);
                 xhr.send('');
             }
             
             function DeletePhotoLike(photoId){
                 var xhr = new XMLHttpRequest();
-                xhr.open('DELETE','PhotoLikeServlet',true);
+                xhr.open('DELETE','deletephotolike',true);
                 xhr.setRequestHeader("photoId",photoId);
                 xhr.send('');
             }
@@ -1559,9 +1559,10 @@
             
             function printDialogs(){
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','DialogsServlet',true);
+                xhr.open('GET','getdialogs',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
+                    console.log(xhr.responseText);
                     var dialogs = JSON.parse(xhr.responseText);
                     var elem = document.getElementById('Container');
                     var content = "<li class='list-group-item Header' style='background:#dddddd;'>Dialogs</li>";
@@ -1593,7 +1594,7 @@
             
             function getMoreDialogs(){
                  var xhr = new XMLHttpRequest();
-                xhr.open('GET','DialogsServlet',true);
+                xhr.open('GET','getdialogs',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var dialogs = JSON.parse(xhr.responseText);
@@ -1677,7 +1678,7 @@
             
             function RemoveDialog(elem){
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','DialogsServlet',true);
+                xhr.open('GET','deletedialog',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var parent = elem.parentNode;
@@ -1714,11 +1715,12 @@
                 var other = elem.id || elem;
                if (getCookie('username')!==other) {
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','DialogServlet',true);
+                xhr.open('GET','getoldmessages',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
-                    var other = xhr.getResponseHeader("other");
                     var messages = JSON.parse(xhr.responseText);
+                    var other = messages.other;
+                    
                     var content = "";
                     if (messages.length > 0){
                       for (var i = 0; i < messages.length; i++){
@@ -1727,9 +1729,9 @@
                       }
                     }
                     content = "<li class='list-group-item' style=' background:#dddddd; height:32px; padding:0px 0px 0px 10px'><div class='PhotoFrame' style='display:inline-block; width:30px; height:30px; border:0px; margin:0px 0px 10px 0px;'><span style='width:28px; height:28px;'><img src='images/"+messages.otherAvatar+"low.jpg' alt='"+other+"' style='max-width:28px; max-height:28px;' onclick='getUser(this)' style='cursor: pointer;'/></span></div><div  class='DialogName' onclick='getUser(this)' style='display:inline-block; position:relative; top: -3px;  height:30px;'> "+other+"</div><span id='"+other+"' class='glyphicon glyphicon-remove  AnimateGlyph' style='position:absolute; left:845px; z-index:900;' onclick='RemoveDialogConfirmation(this)'></span></li><li class='list-group-item' style='min-height:50px; padding-top:1px;'><div id='DialogContainer' style='max-height:400px; overflow:auto;'><table id='DialogTable' style='width:100%;'><tbody>" + content;
-                    content+="</tbody></table></div></li><li class='list-group-item' style='background:#cccccc;'>";
-                    content+="<textarea id='TextArea' class='noscroll' name='text'>";
-                    content+="</textarea><button name='"+other+"' onclick='AddMessage(this)' style='margin-left:94%; font-size: 0.8em; color: #999999;'>Send</button></li>";
+                    content += "</tbody></table></div></li><li class='list-group-item' style='background:#cccccc;'>";
+                    content += "<textarea id='TextArea' class='noscroll' name='text'>";
+                    content += "</textarea><button name='"+other+"' onclick='AddMessage(this)' style='margin-left:94%; font-size: 0.8em; color: #999999;'>Send</button></li>";
                     
                     document.getElementById('Container').children[0].innerHTML = content;
                     document.getElementById('Container').style.display = 'block';
@@ -1750,7 +1752,7 @@
                     if  (messages.length > 0) if (messages[0].to_id===messages[0].user) setTimeout(ChangeUnread,2000);    
                 };
                 xhr.setRequestHeader("other",other);
-                xhr.setRequestHeader("getOldMessages","true");
+                xhr.setRequestHeader("lastId", "-1");
                 xhr.send('');
                }
             };
@@ -1759,7 +1761,7 @@
              var other = $('.list-group-item > div').first().next().html();
              if ($('#DialogTable table').last().css('float')==='right'){
                var xhr = new XMLHttpRequest();
-                xhr.open('POST','ChangeUnreadMessageServlet',true);
+                xhr.open('POST','changeunread',true);
                 xhr.setRequestHeader("other",other);
                 xhr.send('');
               ChangeDialogStyles();
@@ -1788,7 +1790,7 @@
            function getOldMessages(){
                var other = $('.DialogName').first().html();
                var xhr = new XMLHttpRequest();
-                xhr.open('GET','DialogServlet',true);
+                xhr.open('GET','getoldmessages',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var other = xhr.getResponseHeader("other");
@@ -1805,7 +1807,6 @@
 
                 };
                 xhr.setRequestHeader("other",other);
-                xhr.setRequestHeader("getOldMessages","true");
                 var firstId = $('#DialogTable table').first().attr('id');
                 firstId = firstId.substring(10,firstId.split('').length);
                 xhr.setRequestHeader("lastId",firstId);
@@ -1816,7 +1817,7 @@
                clearTimeout(timerLastMessageId);
                var other = $('.DialogName').first().html();
                var xhr = new XMLHttpRequest();
-                xhr.open('GET','DialogServlet',true);
+                xhr.open('GET','getnewmessages',true);
                 xhr.onreadystatechange = function(){
                     if (this.readyState !== 4) return;
                     var other = xhr.getResponseHeader("other");
@@ -1872,12 +1873,11 @@
                 text = cleanText(text.replace(/[\r\n]/g,':.!'));
                 elem.previousSibling.value = '';
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST','DialogServlet?value='+text,true);
+                xhr.open('POST','addmessage?value='+text,true);
                 xhr.onreadystatechange = function() {
                     if (this.readyState !== 4) return;
                 };
                 xhr.setRequestHeader("other",elem.name);
-                xhr.setRequestHeader("addMessage","true");
                 xhr.send('');
             };
             

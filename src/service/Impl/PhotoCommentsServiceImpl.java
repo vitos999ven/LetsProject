@@ -1,10 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package service.Impl;
+
 
 import hibernate.logic.PhotoComment;
 import hibernate.logic.PhotoDescription;
@@ -12,17 +7,18 @@ import hibernate.logic.User;
 import hibernate.util.Factory;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
+import javax.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import service.JsonObject;
 import service.PhotoCommentsService;
 
-/**
- *
- * @author Витос
- */
+
+@Service
 public class PhotoCommentsServiceImpl implements PhotoCommentsService{
 
     private JsonObject json;
     
+    @Transactional
     @Override
     public String addPhotoComment(long photoId, String cookieUser, String value) {
         json = new JsonObject();
@@ -41,7 +37,7 @@ public class PhotoCommentsServiceImpl implements PhotoCommentsService{
         return json.toJsonString();
     }
 
-    
+    @Transactional
     @Override
     public void setDeletedPhotoComment(long commentId, String cookieUser) {
         try{

@@ -9,14 +9,18 @@ import hibernate.util.Factory;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import service.JsonObject;
 import service.UsersService;
 
 
+@Service
 public class UsersServiceImpl implements UsersService{
     
     private JsonObject json;
     
+    @Transactional
     @Override
     public String getUserByJson(String user, long lastPhotoId, int count, String cookieUser) {
         json = new JsonObject();
@@ -64,7 +68,7 @@ public class UsersServiceImpl implements UsersService{
         return json.toJsonString();
     }
 
-    
+    @Transactional
     @Override
     public String getUsersByJson(String search, String city, SexEnum sex, int ageFrom, int ageTo, String lastLogin, int count, String cookieUser) {
         json = new JsonObject();
@@ -98,7 +102,7 @@ public class UsersServiceImpl implements UsersService{
         return json.toJsonString();    
     }
 
-    
+    @Transactional
     @Override
     public String getUsersByJson(String search, String lastLogin, boolean next, int count) {
         json = new JsonObject();
@@ -137,9 +141,9 @@ public class UsersServiceImpl implements UsersService{
         return json.toJsonString();      
     }
 
-    
+    @Transactional
     @Override
-    public boolean checkLoginUnique(String login) {
+    public Boolean checkLoginUnique(String login) {
         try{
             User checkUser = Factory.getInstance().getUserDAO().getUserByLogin(login);
             return (checkUser == null);
@@ -148,8 +152,9 @@ public class UsersServiceImpl implements UsersService{
         }
     }
 
+    @Transactional
     @Override
-    public boolean addNewUser(String login, String password, byte sex, Calendar birthday, String city, String about) {
+    public Boolean addNewUser(String login, String password, byte sex, Calendar birthday, String city, String about) {
         try{
             User newUser = new User(login, password, (byte)0, sex, birthday, city,about, new Long(0));
             Factory.getInstance().getUserDAO().addUser(newUser);
@@ -160,9 +165,9 @@ public class UsersServiceImpl implements UsersService{
         }
     }
 
-    
+    @Transactional
     @Override
-    public boolean checkPassword(String login, String password) {
+    public Boolean checkPassword(String login, String password) {
         try{
             User checkUser = Factory.getInstance().getUserDAO().getUserByLogin(login);
             if ((checkUser != null) && (checkUser.getPassword().equals(password))) {
@@ -173,7 +178,7 @@ public class UsersServiceImpl implements UsersService{
         return false;
     }
 
-    
+    @Transactional
     @Override
     public Long getUserAvatarId(String login) {
         try{
